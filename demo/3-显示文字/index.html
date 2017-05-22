@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <title></title>
+    <style>
+        body { margin: 0;background:#000; }
+        canvas { display: block;margin:0 auto;position:absolute; }
+    </style>
+</head>
+<body>
+    <div id="string" style="display:nones;background:#fff;"> 
+        sdjfkskfsk,(dhfkhskfjhsjkdf
+    </div>
+    <script src="../../src/utils/Utils.js"></script>
+    <script src="../../src/utils/Ajax.js"></script>
+    <script src="../../src/utils/compatible.js"></script>
+    <script src="../../src/Game.js"></script>
+    <script src="../../src/event/Event.js"></script>
+    <script src="../../src/event/Touch.js"></script>
+    <script src="../../src/event/InteractionEvent.js"></script>
+    <script src="../../src/event/KeyboardEvent.js"></script>
+    <script src="../../src/event/WheelEvent.js"></script>
+    <script src="../../src/event/Listeners.js"></script>
+    <script src="../../src/event/Interaction.js"></script>
+    <script src="../../src/geom/Circle.js"></script>
+    <script src="../../src/geom/Ellipse.js"></script>
+    <script src="../../src/geom/Matrix.js"></script>
+    <script src="../../src/geom/Point.js"></script>
+    <script src="../../src/geom/Polygon.js"></script>
+    <script src="../../src/geom/Rectangle.js"></script>
+    <script src="../../src/display/DisplayObject.js"></script>
+    <script src="../../src/display/DisplayObjectContainer.js"></script>
+    <script src="../../src/display/Window.js"></script>
+    <script src="../../src/display/Stage.js"></script>
+    <script src="../../src/display/Sprite.js"></script>
+    <script src="../../src/texture/ImageData.js"></script>
+    <script src="../../src/texture/VideoData.js"></script>
+    <script src="../../src/texture/Texture.js"></script>
+    <script src="../../src/text/Text.js"></script>
+    <script src="../../src/text/TextLine.js"></script>
+    <script src="../../src/text/TextWord.js"></script>
+    <script src="../../src/renderer/canvas/CanvasRenderer.js"></script>
+    <script src="../FPS.js"></script>
+    <script src="../Drag.js"></script>
+    <script>
+        window.onload = function (e) {
+            var width = 512;//document.documentElement.clientWidth;
+            var height = document.documentElement.clientHeight;
+
+            var fps = new FPS('#000');
+            //创建渲染器
+            var renderer = new Game.CanvasRenderer(width, height);
+            document.body.appendChild(renderer.canvas);
+            //创建舞台
+            var stage = new Game.Stage('#fff');
+            //创建拖拽对象
+            var drag = new Drag(Game.Window);
+            //创建交互事件对象
+            var interaction = new Game.Interaction(stage);
+            //绑定渲染器
+            interaction.setRenderer(renderer);
+
+            var label = new Game.Text(string.innerHTML, {
+                fill: '#000',
+                stroke: '#f00',
+                //wordBreak: 'break-not',
+                //textIndent: 200,
+                //textAlign: 'right',
+                //verticalAlign: 'bottom',
+                fontSize: 14,
+                lineHeight: 20,
+                //fontStyle: 'italic',
+                //fontVariant: 'small-caps',
+                //fontWeight: 'bold',
+                fontFamily: '微软雅黑',
+                //strokeThickness: 2,
+                wordWrap: 'auto',
+                //letterSpacing: 2
+            });
+            label.position.set(10, 30);
+            label.width = 100;//label.measureText(label.text);
+
+            drag.append(label);
+
+            stage.addChild(label);
+
+            var count = 10
+
+            !function () {
+                setTimeout(arguments.callee);
+                //requestAnimationFrame(arguments.callee);
+
+                if (label.width > 480) {
+                    count = -1;
+                } else if (label.width < 100) {
+                    count = 1;
+                }
+                //label.width += count;
+
+
+                //label.scale.set(Math.abs(Math.sin(count)), Math.abs(Math.sin(count)));
+                //label.rotate += 10;
+
+                renderer.render(stage);
+                //更新FPS
+                fps.update(renderer);
+            }();
+        };
+        //11904-42182
+        //44032-55203
+        //for (var i = parseInt('4e00', 16) ; i < parseInt('9fa5', 16) ; i++) {
+        //    console.log(String.fromCharCode(i),i);
+        //}
+        var res;
+
+
+        
+
+    </script>
+</body>
+
+</html>

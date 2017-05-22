@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+    <canvas id="canvas" width="320" height="480"></canvas>
+    <script>
+        var c = document.getElementById("canvas");
+        var ctx = c.getContext("2d");
+        ctx.font = "20px Arial";
+        var img = new Image();
+        img.onload = draw;
+        img.src = "smile.jpg";
+        var ccc = [];
+        var $count = 0;
+        var fps = 0;
+        var $time = new Date().getTime();
+        for (var i = 0; i < 10000; i++) {
+            x = Math.random() * 300;
+            y = Math.random() * 460;
+            ccc.push({ x: x, y: y });
+        }
+        function draw() {
+            for (var i = 0; i < 10000; i++) {
+                var co = ccc[i];
+                ctx.drawImage(img, 0, 0, 30, 30, co.x, co.y, 30, 30);
+            }
+
+            $count++;
+            var now = new Date().getTime();
+            if (now - $time > 1000) {
+                fps = $count;
+                $time = now;
+                $count = 0;
+            }
+            ctx.fillText(fps, 1, 20);
+            setTimeout(draw, 1);
+        }
+    </script>
+</body>
+</html>

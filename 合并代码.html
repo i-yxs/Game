@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <title></title>
+    <style>
+        body{margin:0;}
+        canvas{display:block;}
+        #textarea{width:50%;height:100%;position:absolute;resize:none;display:block;}
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <textarea id="textarea"></textarea>
+    <script src="src/utils/Utils.js"></script>
+    <script src="src/utils/Ajax.js"></script>
+    <script src="src/utils/compatible.js"></script>
+    <script src="src/Game.js"></script>
+    <script src="src/event/Event.js"></script>
+    <script src="src/event/Touch.js"></script>
+    <script src="src/event/InteractionEvent.js"></script>
+    <script src="src/event/KeyboardEvent.js"></script>
+    <script src="src/event/WheelEvent.js"></script>
+    <script src="src/event/Listeners.js"></script>
+    <script src="src/event/Interaction.js"></script>
+    <script src="src/geom/Circle.js"></script>
+    <script src="src/geom/Ellipse.js"></script>
+    <script src="src/geom/Matrix.js"></script>
+    <script src="src/geom/Point.js"></script>
+    <script src="src/geom/Polygon.js"></script>
+    <script src="src/geom/Rectangle.js"></script>
+    <script src="src/display/DisplayObject.js"></script>
+    <script src="src/display/DisplayObjectContainer.js"></script>
+    <script src="src/display/Window.js"></script>
+    <script src="src/display/Stage.js"></script>
+    <script src="src/display/Sprite.js"></script>
+    <script src="src/texture/ImageData.js"></script>
+    <script src="src/texture/VideoData.js"></script>
+    <script src="src/texture/Texture.js"></script>
+    <script src="src/renderer/canvas/CanvasRenderer.js"></script>
+    <script>
+        var script = document.body.querySelectorAll('script'),
+            path = [];
+        for (var i = 0; i < script.length; i++) {
+            if (script[i].src) {
+                path.push(script[i].src + '?' + Math.random());
+            }
+        }
+        var count = 0,
+            string = '';
+        (function next() {
+            Utils.ajax.request({
+                type: 'get',
+                url: path[count],
+                oncomplete: function (res) {
+                    string += res;
+                    count++;
+                    if (count == path.length) {
+                        textarea.value = string;
+                    } else {
+                        next();
+                    }
+                }
+            });
+        })();
+    </script>
+    <script>
+        var context = canvas.getContext('2d');
+        context.save();
+        context.fillStyle = '#fff';
+        context.restore();
+        context.fillStyle = '#fff';
+        context.restore();
+    </script>
+</body>
+</html>

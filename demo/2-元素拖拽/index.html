@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <title></title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="../../src/utils/Utils.js"></script>
+    <script src="../../src/utils/Ajax.js"></script>
+    <script src="../../src/utils/compatible.js"></script>
+    <script src="../../src/Game.js"></script>
+    <script src="../../src/event/Event.js"></script>
+    <script src="../../src/event/Touch.js"></script>
+    <script src="../../src/event/InteractionEvent.js"></script>
+    <script src="../../src/event/KeyboardEvent.js"></script>
+    <script src="../../src/event/WheelEvent.js"></script>
+    <script src="../../src/event/Listeners.js"></script>
+    <script src="../../src/event/Interaction.js"></script>
+    <script src="../../src/geom/Circle.js"></script>
+    <script src="../../src/geom/Ellipse.js"></script>
+    <script src="../../src/geom/Matrix.js"></script>
+    <script src="../../src/geom/Point.js"></script>
+    <script src="../../src/geom/Polygon.js"></script>
+    <script src="../../src/geom/Rectangle.js"></script>
+    <script src="../../src/display/DisplayObject.js"></script>
+    <script src="../../src/display/DisplayObjectContainer.js"></script>
+    <script src="../../src/display/Window.js"></script>
+    <script src="../../src/display/Stage.js"></script>
+    <script src="../../src/display/Sprite.js"></script>
+    <script src="../../src/texture/ImageData.js"></script>
+    <script src="../../src/texture/VideoData.js"></script>
+    <script src="../../src/texture/Texture.js"></script>
+    <script src="../../src/text/Text.js"></script>
+    <script src="../../src/text/TextLine.js"></script>
+    <script src="../../src/text/TextWord.js"></script>
+    <script src="../../src/renderer/canvas/CanvasRenderer.js"></script>
+    <script src="../FPS.js"></script>
+    <script src="../Drag.js"></script>
+    <script src="../gfilter.js"></script>
+    <script>
+        window.onload = function (e) {
+            var list = [];
+
+            var width = document.documentElement.clientWidth;
+            var height = document.documentElement.clientHeight;
+
+            var fps = new FPS();
+            //设置分辨率
+            Game.defaultRenderOptions.resolution = 2;
+
+            var renderer = new Game.CanvasRenderer(width, height);
+            document.body.appendChild(renderer.canvas);
+            var stage = new Game.Stage('#000');
+            Game.Window.addChild(stage);
+            //创建交互事件对象
+            var interaction = new Game.Interaction(stage);
+            //绑定渲染器
+            interaction.setRenderer(renderer);
+            //创建拖拽对象
+            var drag = new Drag(Game.Window);
+
+            var alienContainer = new Game.Sprite(Game.Texture.fromImage('10067470.jpg', 2));
+            alienContainer.position.set(width / 2 - 160, height / 2 - 240);
+            stage.addChild(alienContainer);
+
+            //drag.append(alienContainer);
+
+            var texture = Game.Texture.fromImage('smile.jpg', 1);
+            var sprite;
+
+            for (var i = 0; i < 1000; i++) {
+                sprite = new Game.Sprite(texture);
+
+                sprite.position.set(Utils.randomRange(0, 290), Utils.randomRange(0, 450));
+                alienContainer.addChild(sprite);
+
+                sprite.animate = true;
+                drag.append(sprite);
+
+                //sprite.on('over', function (e) {
+                //    this.animate = false;
+                //    console.log(e);
+                //}, 2);
+                //sprite.on('out', function () {
+                //    this.animate = true;
+                //}, 2);
+            }
+            stage.on('move', function (e) {
+                var rect = alienContainer.getBounds();
+                alienContainer.children.forEach(function (item) {
+                    var px = e.clientX - item.position.x;
+                    var py = e.clientY - item.position.y;
+                    item.origin.set(e.clientX - rect.x - item.position.x, e.clientY - rect.y - item.position.y);
+                });
+            });
+
+            var count = 0;
+
+            !function () {
+                requestAnimationFrame(arguments.callee);
+
+                for (i = 0; i < alienContainer.children.length; i++) {
+                    if (alienContainer.children[i].animate) {
+                        alienContainer.children[i].rotate += 1;
+                    }
+                }
+
+                renderer.render(stage);
+
+
+                fps.update(renderer);
+            }();
+        };
+    </script>
+</body>
+
+</html>

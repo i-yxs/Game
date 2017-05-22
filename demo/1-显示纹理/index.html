@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <title></title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="../../Game-merge.js"></script>
+    <script src="../FPS.js"></script>
+    <script>
+        window.onload = function (e) {
+
+            var width = 512;
+            var height = 512;
+
+            var fps = new FPS();
+
+            var renderer = new Game.CanvasRenderer(width, height);
+            document.body.appendChild(renderer.canvas);
+            var stage = new Game.Stage('#000');
+            Game.Window.addChild(stage);
+
+            var alienContainer = new Game.Sprite(Game.Texture.fromImage('10067470.jpg', 2));
+            alienContainer.position.set(width / 2 - 160, height / 2 - 240);
+            stage.addChild(alienContainer);
+
+            var texture = Game.Texture.fromImage('smile.jpg', 1);
+            var sprite;
+
+            for (var i = 0; i < 100; i++) {
+                sprite = new Game.Sprite(texture);
+                sprite.position.set(Utils.randomRange(0, 290), Utils.randomRange(0, 450));
+                alienContainer.addChild(sprite);
+            }
+
+            var count = 0;
+
+            !function () {
+                requestAnimationFrame(arguments.callee);
+
+
+                renderer.render(stage);
+
+                fps.update(renderer);
+            }();
+        };
+    </script>
+</body>
+
+</html>
