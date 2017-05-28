@@ -236,9 +236,9 @@ if (!Array.indexOfbeefup) {
         },
         on: function () {
             var s = this;
-            s.target.addEventListener('touchstart', s.touchstart);
-            s.target.addEventListener('touchend', s.touchend);
-            s.target.addEventListener('touchmove', s.touchmove);
+            s.target.addEventListener('touchstart', s.touchstart, { passive: false });
+            s.target.addEventListener('touchend', s.touchend, { passive: false });
+            s.target.addEventListener('touchmove', s.touchmove, { passive: false });
         },
         off: function () {
             var s = this;

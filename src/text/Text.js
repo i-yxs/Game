@@ -21,12 +21,23 @@
         stroke: '#f00',
         //描边厚度
         strokeThickness: 0,
-        //自动换行的处理方法(normal|break-not(不自动换行)|break-all(允许在单词内换行))
+        /* 自动换行的处理方法
+            normal      自动换行
+            break-all   允许在单词内换行
+        */
         wordBreak: 'normal',
+        /* 如何处理字符串内的空白符
+            normal      忽略所有空白符，文本自动换行
+            pre         保留所有空白符，文本不会自动换行
+            nowrap      忽略所有空白符，文本不会自动换行
+            pre-wrap    保留所有空白符，文本自动换行
+            pre-line    忽略空白符序列，保留换行符，文本自动换行
+        */
+        whiteSpace: 'normal',
         //边角样式(miter(斜角)|round(圆角)|bevel(尖角))
         lineJoin: 'round',
         //行间距
-        lineHeight: 22,
+        lineHeight: 20,
         //水平对齐方式(left|center|right)
         textAlign: 'left',
         //垂直对齐方式(top|middle|bottom)
@@ -75,7 +86,7 @@ Game.Text.prototype.getBounds = function () {
     //应用样式
     if (s.dirty) {
         s.dirty = false;
-        s.context.font = '' + s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily + '';
+        s.context.font = s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily;
         s.updateTextLine();
     }
     var height = s._lineData.length * lineHeight;
@@ -90,19 +101,19 @@ Game.Text.prototype.getBounds = function () {
     return new Game.Rectangle(minX, minY, maxX - minX, maxY - minY);
 };
 //获取指定宽度可以包含的字符数
-Game.Text.prototype.getMaximum = function (string, width) {
+Game.Text.prototype.getmaximum = function (str, width) {
     var s = this;
     var tempWidth = 0;
-    var length = string.length;
+    var length = str.length;
     for (var i = 0; i < length; i++) {
-        tempWidth += s.context.measureText(string[i]).width;
+        tempWidth += s.context.measureText(str[i]).width;
         if (i > 0) { tempWidth += s.style.letterSpacing; }
         if (tempWidth > width) { break; }
     }
     return i || 1;
 };
 //获取指定文本的宽度
-Game.Text.prototype.measureText = function (string) {
+Game.Text.prototype.measureText = function (str) {
     var s = this;
     var line;
     var number;
@@ -110,10 +121,10 @@ Game.Text.prototype.measureText = function (string) {
     //应用样式
     if (s.dirty) {
         s.dirty = false;
-        s.context.font = '' + s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + s.style.fontSize + 'px ' + s.style.fontFamily + '';
+        s.context.font = s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + s.style.fontSize + 'px ' + s.style.fontFamily;
     }
     //计算宽度
-    line = string.split(/(?:\r\n|\r|\n)/i);
+    line = str.split(/(?:\r\n|\r|\n)/i);
     for (i = 0; i < line.length; i++) {
         number = s.context.measureText(line[i]).width + s.style.letterSpacing * (line[i].length - 1);
         width = Math.max(number, width);
@@ -131,105 +142,11 @@ Game.Text.prototype.updateTextLine = function () {
     //去除首尾换行空格&多个空格合并成一个空格
     s.text = s.text.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/[ ]+/g, ' ');
     //应用样式
-    s.context.font = '' + s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily + '';
-    //分行
-    var index;
-    var lineData;
-    var lineList = s.text.split(/(?:[\r\n])/ig);
-    var regular = /([!"#$%&'*+,-.:;=?~)}>\]\\][(<{\[])|([\u2e80-\ua4c6\uac00-\ud7a3])/g;
-    switch (s.style.wordBreak) {
-        case 'normal':
-            lineList.forEach(function (item, i) {
-                //去除首尾空格
-                item = item.replace(/^[ ]+/g, '');
-                lineList[i] = item.replace(/[ ]+$/g, '');
-                //创建行数据
-                if (item === '') {
-                    lineData = new Game.TextLine();
-                    lineData.text = item;
-                    s._lineData.push(lineData);
-                } else {
-                    var res;
-                    var list = [];
-                    var string = item;
-                    var listWidth;
-                    while (res = regular.exec(string)) {
-                        list.push(res.index);
-                    }
-                    for (var z = list.length - 1; z >= 0; z--) {
-                        listWidth = s.context.measureText(string).width;
-                        if (i === 0 && z === 0) { listWidth += s.style.textIndent; }
-                        if (listWidth > containerWidth) {
-
-                        }
-                    }
-
-
-
-
-                    while (item) {
-                        if (i > 0) { index = s.getMaximum(item, containerWidth); }
-                        else { index = s.getMaximum(item, containerWidth - s.style.textIndent); }
-                        lineData = new Game.TextLine();
-                        lineData.text = item.substr(0, index);
-                        s._lineData.push(lineData);
-                        item = item.substr(index);
-                    }
-                }
-            });
-
-
-
-            if (s.style.wordBreak === 'normal') {
-                string = string.substring(0, i);
-                while (res = regular.exec(string)) {
-                    list.push(res.index);
-                }
-                if (list.length) {
-                    i = list[list.length - 1] + 1;
-                }
-            }
-            break;
-        case 'break-not':
-            lineList.forEach(function (item, i) {
-                //去除首尾空格
-                item = item.replace(/^[ ]+/g, '');
-                lineList[i] = item.replace(/[ ]+$/g, '');
-                //创建行数据
-                lineData = new Game.TextLine();
-                lineData.text = item;
-                s._lineData.push(lineData);
-            });
-            break;
-        case 'break-all':
-            lineList.forEach(function (item, i) {
-                //去除首尾空格
-                item = item.replace(/^[ ]+/g, '');
-                lineList[i] = item.replace(/[ ]+$/g, '');
-                //创建行数据
-                if (item === '') {
-                    lineData = new Game.TextLine();
-                    lineData.text = item;
-                    s._lineData.push(lineData);
-                } else {
-                    while (item) {
-                        if (i > 0) { index = s.getMaximum(item, containerWidth); }
-                        else { index = s.getMaximum(item, containerWidth - s.style.textIndent); }
-                        lineData = new Game.TextLine();
-                        lineData.text = item.substr(0, index);
-                        s._lineData.push(lineData);
-                        item = item.substr(index);
-                    }
-                }
-            });
-            break;
-    }
+    s.context.font = s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily;
+    //拆分行
+    s.splitTextLine();
     //设置单字符数据
-    var wordX;
-    var startX;
-    var startY;
-    var length;
-    var wordData;
+    var wordX, startX, startY, textlen, wordData;
     //根据垂直对齐方式计算开始位置
     switch (s.style.verticalAlign) {
         case 'top': startY = 0; break;
@@ -238,30 +155,97 @@ Game.Text.prototype.updateTextLine = function () {
     }
     s._lineData.forEach(function (item, i, z) {
         wordX = 0;
-        length = item.text.length;
+        textlen = item.text.length;
         item.y = i * lineHeight;
-        item.width = width;
+        item.width = containerWidth;
         item.height = lineHeight;
         //item.select = true;
-        item.contentWidth = Math.round(s.context.measureText(item.text).width + s.style.letterSpacing * (length - 1));
+        item.contentWidth = Math.round(s.context.measureText(item.text).width + s.style.letterSpacing * (textlen - 1));
         //根据水平对齐方式计算水平基线位置
         switch (s.style.textAlign) {
             case 'left': startX = 0; break;
-            case 'center': startX = width / 2 - item.contentWidth / 2; break;
-            case 'right': startX = width - item.contentWidth; break;
+            case 'center': startX = containerWidth / 2 - item.contentWidth / 2; break;
+            case 'right': startX = containerWidth - item.contentWidth; break;
         }
         if (i === 0 && s.style.textAlign !== 'right') {
             startX += s.style.textIndent;
         }
         //创建单字符数据
-        for (z = 0; z < length; z++) {
+        for (z = 0; z < textlen; z++) {
             wordData = new Game.TextWord(item.text[z]);
             wordData.x = startX + wordX;
             wordData.y = startY + i * lineHeight;
-            wordData.width = Math.round(s.context.measureText(item.text[z]).width + s.style.letterSpacing);
-            wordData.height = Math.round(s.style.fontSize);
+            wordData.width = s.context.measureText(item.text[z]).width + s.style.letterSpacing;
+            wordData.height = s.style.fontSize;
             item.word.push(wordData);
             wordX += wordData.width;
+        }
+    });
+};
+//拆分文本
+Game.Text.prototype.splitTextLine = function () {
+    var s = this;
+    var res, word, index, indent, lineData, indexList, startIndex;
+    var lineList = s.text.split(/(?:[\r\n])/ig);
+    var splitWord = /([ ])|([!"#$%&'*+,-.:;=?~)}>\]\\][(<{\[])|([\u2e80-\ua4c6\uac00-\ud7a3])/g;
+    var containerWidth = s.width * s.resolution;
+    lineList.forEach(function (item, i) {
+        //去除首尾空格
+        item = item.replace(/^[ ]+/g, '').replace(/[ ]+$/g, '');
+        lineList[i] = item;
+        //创建行数据
+        if (item === '') {
+            lineData = new Game.TextLine();
+            lineData.text = item;
+            s._lineData.push(lineData);
+        } else {
+            switch (s.style.wordBreak) {
+                case 'normal':
+                    index = 0;
+                    indexList = [0];
+                    startIndex = 0;
+                    //拆分单词
+                    while (res = splitWord.exec(item)) {
+                        indexList.push(res.index + 1);
+                    }
+                    indexList.push(item.length);
+                    while (index < indexList.length) {
+                        indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
+                        if (indexList.length === 0) {
+                            lineData = new Game.TextLine();
+                            lineData.text = item;
+                            s._lineData.push(lineData);
+                        } else if (s.context.measureText(item.substring(indexList[startIndex], indexList[index])).width + indent > containerWidth) {
+                            lineData = new Game.TextLine();
+                            if (startIndex === index - 1) {
+                                lineData.text = item.substring(indexList[startIndex], indexList[index]);
+                                s._lineData.push(lineData);
+                                startIndex = index - 1;
+                            } else {
+                                lineData.text = item.substring(indexList[startIndex], indexList[index - 1]);
+                                s._lineData.push(lineData);
+                                startIndex = index - 1;
+                                index -= 1;
+                            }
+                        } else if (index === indexList.length - 1) {
+                            lineData = new Game.TextLine();
+                            lineData.text = item.substring(indexList[startIndex], indexList[index]);
+                            s._lineData.push(lineData);
+                        }
+                        index++;
+                    }
+                    break;
+                case 'break-all':
+                    while (item) {
+                        indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
+                        index = s.getmaximum(item, containerWidth - indent);
+                        lineData = new Game.TextLine();
+                        lineData.text = item.substr(0, index);
+                        item = item.substr(index);
+                        s._lineData.push(lineData);
+                    }
+                    break;
+            }
         }
     });
 };
@@ -285,7 +269,7 @@ Game.Text.prototype.updateCacheCanvas = function (resolution) {
     s.context.lineWidth = s.style.strokeThickness;
     s.context.textAlign = 'left';
     s.context.textBaseline = s.style.verticalAlign;
-    s.context.font = '' + s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily + '';
+    s.context.font = s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily;
     //绘制背景
     s.context.fillStyle = 'rgba(0, 115, 255, 0.8)';
     s._lineData.forEach(function (line) {
