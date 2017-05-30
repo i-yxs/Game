@@ -187,7 +187,7 @@ Game.Text.prototype.splitTextLine = function () {
     var s = this;
     var res, word, index, indent, lineData, indexList, startIndex;
     var lineList = s.text.split(/(?:[\r\n])/ig);
-    var splitWord = /([ ])|([!"#$%&'*+,-.:;=?~)}>\]\\][(<{\[])|([\u2e80-\ua4c6\uac00-\ud7a3])/g;
+    var splitWord = /([ ])|([!"#$%&'*+,-.:;=?~)}>\]\\][(<{\[])|([\u2e80-\ua4c6\uac00-\ud7a3\uf900-\ufad9\ufe10-\ufe19\ufe30-\ufe6b\uff01-\uff60])/g;
     var containerWidth = s.width * s.resolution;
     lineList.forEach(function (item, i) {
         //去除首尾空格
@@ -206,9 +206,15 @@ Game.Text.prototype.splitTextLine = function () {
                     startIndex = 0;
                     //拆分单词
                     while (res = splitWord.exec(item)) {
+                        if (indexList[index] !== res.index) {
+                            indexList.push(res.index);
+                            index++;
+                        }
                         indexList.push(res.index + 1);
+                        index++;
                     }
                     indexList.push(item.length);
+                    index = 0;
                     while (index < indexList.length) {
                         indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
                         if (indexList.length === 0) {
