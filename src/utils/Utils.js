@@ -475,7 +475,7 @@ Utils.DisableDragStart = function (obj, is) {
 };
 //事件兼容处理
 Utils.compEventPcorMobile = function (type) {
-    var mouse = ['mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout'],
+    var mouse = ['mousedown', 'mouseup', 'mousemove'],
         touch = ['touchstart', 'touchend', 'touchmove'];
     type = type.toLowerCase();
     if (Utils.isSupportTouch) {

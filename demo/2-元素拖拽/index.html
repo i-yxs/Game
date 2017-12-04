@@ -52,8 +52,8 @@
         window.onload = function (e) {
             var list = [];
 
-            var width = document.documentElement.clientWidth;
-            var height = document.documentElement.clientHeight;
+            var width = 320;
+            var height = 640;
 
             var fps = new FPS();
             //设置分辨率
@@ -88,21 +88,21 @@
                 sprite.animate = true;
                 drag.append(sprite);
 
-                //sprite.on('over', function (e) {
-                //    this.animate = false;
-                //    console.log(e);
-                //}, 2);
-                //sprite.on('out', function () {
-                //    this.animate = true;
-                //}, 2);
+                sprite.on('over', function (e) {
+                    this.animate = false;
+                    console.log(e);
+                }, 2);
+                sprite.on('out', function () {
+                    this.animate = true;
+                }, 2);
             }
             stage.on('move', function (e) {
-                var rect = alienContainer.getBounds();
-                alienContainer.children.forEach(function (item) {
-                    var px = e.clientX - item.position.x;
-                    var py = e.clientY - item.position.y;
-                    item.origin.set(e.clientX - rect.x - item.position.x, e.clientY - rect.y - item.position.y);
-                });
+                //var rect = alienContainer.getBounds();
+                //alienContainer.children.forEach(function (item) {
+                //    var px = e.clientX - item.position.x;
+                //    var py = e.clientY - item.position.y;
+                //    item.origin.set(e.clientX - rect.x - item.position.x, e.clientY - rect.y - item.position.y);
+                //});
             });
 
             var count = 0;
@@ -112,7 +112,7 @@
 
                 for (i = 0; i < alienContainer.children.length; i++) {
                     if (alienContainer.children[i].animate) {
-                        alienContainer.children[i].rotate += 1;
+                        alienContainer.children[i].rotate += 6;
                     }
                 }
 

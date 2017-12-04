@@ -25,6 +25,11 @@ Game.Listeners.prototype.dispatchEvent = function (type, data, phase) {
     var s = this;
     phase = phase || 1;
     type = type.toLowerCase();
+    //优先派送
+    var typeName = type.toLowerCase().replace(/^([a-z])/g, type[0].toUpperCase());
+    if (s['on' + typeName] && Utils.isType(s['on' + typeName], 'function')) {
+        s['on' + typeName].call(s, data);
+    }
     if (s._GameListeners[phase]) {
         var list = s._GameListeners[phase][type];
         if (list) {

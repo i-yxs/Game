@@ -2,9 +2,9 @@
 Game.ImageData = function (source) {
     var s = this;
     //图像宽度
-    s.width = 0;
+    s.width = null;
     //图像高度
-    s.height = 0;
+    s.height = null;
     //源数据
     s.source = source;
     //加载数据源

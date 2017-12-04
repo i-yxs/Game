@@ -16,8 +16,37 @@
     </style>
 </head>
 <body>
-    <script src="../../Game-merge.js"></script>
+    <script src="../../src/utils/Utils.js"></script>
+    <script src="../../src/utils/Ajax.js"></script>
+    <script src="../../src/utils/compatible.js"></script>
+    <script src="../../src/Game.js"></script>
+    <script src="../../src/event/Event.js"></script>
+    <script src="../../src/event/Touch.js"></script>
+    <script src="../../src/event/InteractionEvent.js"></script>
+    <script src="../../src/event/KeyboardEvent.js"></script>
+    <script src="../../src/event/WheelEvent.js"></script>
+    <script src="../../src/event/Listeners.js"></script>
+    <script src="../../src/event/Interaction.js"></script>
+    <script src="../../src/geom/Circle.js"></script>
+    <script src="../../src/geom/Ellipse.js"></script>
+    <script src="../../src/geom/Matrix.js"></script>
+    <script src="../../src/geom/Point.js"></script>
+    <script src="../../src/geom/Polygon.js"></script>
+    <script src="../../src/geom/Rectangle.js"></script>
+    <script src="../../src/display/DisplayObject.js"></script>
+    <script src="../../src/display/DisplayObjectContainer.js"></script>
+    <script src="../../src/display/Window.js"></script>
+    <script src="../../src/display/Stage.js"></script>
+    <script src="../../src/display/Sprite.js"></script>
+    <script src="../../src/texture/ImageData.js"></script>
+    <script src="../../src/texture/VideoData.js"></script>
+    <script src="../../src/texture/Texture.js"></script>
+    <script src="../../src/text/Text.js"></script>
+    <script src="../../src/text/TextLine.js"></script>
+    <script src="../../src/text/TextWord.js"></script>
+    <script src="../../src/renderer/canvas/CanvasRenderer.js"></script>
     <script src="../FPS.js"></script>
+    <script src="../Drag.js"></script>
     <script>
         window.onload = function (e) {
 
@@ -36,16 +65,13 @@
             stage.addChild(alienContainer);
 
             var texture = Game.Texture.fromImage('smile.jpg', 1);
-            var sprite;
 
+            var sprite;
             for (var i = 0; i < 100; i++) {
                 sprite = new Game.Sprite(texture);
                 sprite.position.set(Utils.randomRange(0, 290), Utils.randomRange(0, 450));
                 alienContainer.addChild(sprite);
             }
-
-            var count = 0;
-
             !function () {
                 requestAnimationFrame(arguments.callee);
 

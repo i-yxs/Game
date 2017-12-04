@@ -3,8 +3,6 @@
     var context = document.createElement('canvas').getContext('2d');
     //图片平滑处理函数名
     s.smoothProperty = Utils.browserPrefixCompatible('imageSmoothingEnabled', context);
-    //版本
-    s.version = '1.0';
     //设备像素比
     s.devicePixelRatio = window.devicePixelRatio || 1;
     //全局默认渲染选项

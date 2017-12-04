@@ -86,7 +86,6 @@ Game.Text.prototype.getBounds = function () {
     //应用样式
     if (s.dirty) {
         s.dirty = false;
-        s.context.font = s.style.fontStyle + ' ' + s.style.fontVariant + ' ' + s.style.fontWeight + ' ' + fontSize + 'px ' + s.style.fontFamily;
         s.updateTextLine();
     }
     var height = s._lineData.length * lineHeight;
@@ -186,98 +185,104 @@ Game.Text.prototype.splitTextLine = function () {
     var res, word, index, indent, lineData, indexList, startIndex;
     var splitWord = /([ ])|([!"#$%&'*+,-.:;=?~)}>\]\\][(<{\[])|([\u2e80-\ua4c6\uac00-\ud7a3\uf900-\ufad9\ufe10-\ufe19\ufe30-\ufe6b\uff01-\uff60])/g;
     var containerWidth = s.width * s.resolution;
-    if (s.style.whiteSpace === 'pre') {
-        var lineList = s.text.split(/(?:[\r\n])/ig);
-        lineList.forEach(function (item, i) {
-            lineData = new Game.TextLine();
-            lineData.text = item;
-            s._lineData.push(lineData);
-        });
-    } else if (s.style.whiteSpace === 'nowrap') {
-        var lineList = [s.text.replace(/\s+/g, ' ')];
-        lineList.forEach(function (item, i) {
-            lineData = new Game.TextLine();
-            lineData.text = item.replace(/^\s+/g, '');
-            s._lineData.push(lineData);
-        });
-    } else {
-        if (s.style.whiteSpace === 'normal') {
-            s.text = s.text.replace(/^\s+/g, '').replace(/[\n\r]+/g, '').replace(/\s+/g, ' ');
-        }
-        var lineList = s.text.split(/(?:[\r\n])/ig);
-        lineList.forEach(function (item, i) {
-            if (s.style.whiteSpace === 'normal') {
-                item = item.replace(/^\s+/g, '');
-            } else if (s.style.whiteSpace === 'pre-line') {
-                item = item.replace(/^\s+/g, '');
-            }
-            lineList[i] = item;
-            //创建行数据
-            if (item === '') {
+    switch (s.style.whiteSpace) {
+        case 'pre':
+            var lineList = s.text.split(/(?:[\r\n])/ig);
+            lineList.forEach(function (item, i) {
                 lineData = new Game.TextLine();
                 lineData.text = item;
                 s._lineData.push(lineData);
-            } else {
-                switch (s.style.wordBreak) {
+            });
+            break;
+        case 'nowrap':
+            var lineList = [s.text.replace(/\s+/g, ' ')];
+            lineList.forEach(function (item, i) {
+                lineData = new Game.TextLine();
+                lineData.text = item.replace(/^\s+/g, '');
+                s._lineData.push(lineData);
+            });
+            break;
+        default:
+            if (s.style.whiteSpace === 'normal') {
+                s.text = s.text.replace(/^\s+/g, '').replace(/[\n\r]+/g, '').replace(/\s+/g, ' ');
+            }
+            var lineList = s.text.split(/(?:[\r\n])/ig);
+            lineList.forEach(function (item, i) {
+                switch (s.style.whiteSpace) {
                     case 'normal':
-                        index = 0;
-                        indexList = [0];
-                        startIndex = 0;
-                        //拆分单词
-                        while (res = splitWord.exec(item)) {
-                            if (indexList[index] !== res.index) {
-                                indexList.push(res.index);
-                                index++;
-                            }
-                            indexList.push(res.index + 1);
-                            index++;
-                        }
-                        indexList.push(item.length);
-                        index = 0;
-                        while (index < indexList.length) {
-                            indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
-                            if (indexList.length === 0) {
-                                s._lineData.push(s.newLineData(item));
-                            } else if (s.context.measureText(item.substring(indexList[startIndex], indexList[index])).width + indent > containerWidth) {
-                                if (startIndex === index - 1) {
-                                    lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index]));
-                                    s._lineData.push(lineData);
-                                    startIndex = index - 1;
-                                } else {
-                                    lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index - 1]));
-                                    s._lineData.push(lineData);
-                                    startIndex = index - 1;
-                                    index -= 1;
-                                }
-                            } else if (index === indexList.length - 1) {
-                                lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index]));
-                                s._lineData.push(lineData);
-                            }
-                            index++;
-                        }
-                        break;
-                    case 'break-all':
-                        while (item) {
-                            indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
-                            index = s.getmaximum(item, containerWidth - indent);
-                            lineData = s.newLineData(item.substr(0, index));
-                            s._lineData.push(lineData);
-                            item = item.substr(index);
-                        }
+                    case 'pre-line':
+                        item = item.replace(/^\s+/g, '');
                         break;
                 }
-            }
-        });
+                lineList[i] = item;
+                //创建行数据
+                if (item === '') {
+                    lineData = new Game.TextLine();
+                    lineData.text = item;
+                    s._lineData.push(lineData);
+                } else {
+                    switch (s.style.wordBreak) {
+                        case 'normal':
+                            index = 0;
+                            indexList = [0];
+                            startIndex = 0;
+                            //拆分单词
+                            while (res = splitWord.exec(item)) {
+                                if (indexList[index] !== res.index) {
+                                    indexList.push(res.index);
+                                    index++;
+                                }
+                                indexList.push(res.index + 1);
+                                index++;
+                            }
+                            indexList.push(item.length);
+                            index = 0;
+                            while (index < indexList.length) {
+                                indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
+                                if (indexList.length === 0) {
+                                    s._lineData.push(s.newLineData(item));
+                                } else if (s.context.measureText(item.substring(indexList[startIndex], indexList[index])).width + indent > containerWidth) {
+                                    if (startIndex === index - 1) {
+                                        lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index]));
+                                        s._lineData.push(lineData);
+                                        startIndex = index - 1;
+                                    } else {
+                                        lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index - 1]));
+                                        s._lineData.push(lineData);
+                                        startIndex = index - 1;
+                                        index -= 1;
+                                    }
+                                } else if (index === indexList.length - 1) {
+                                    lineData = s.newLineData(item.substring(indexList[startIndex], indexList[index]));
+                                    s._lineData.push(lineData);
+                                }
+                                index++;
+                            }
+                            break;
+                        case 'break-all':
+                            while (item) {
+                                indent = s._lineData.length > 0 ? 0 : s.style.textIndent;
+                                index = s.getmaximum(item, containerWidth - indent);
+                                lineData = s.newLineData(item.substr(0, index));
+                                s._lineData.push(lineData);
+                                item = item.substr(index);
+                            }
+                            break;
+                    }
+                }
+            });
+            break;
     }
 };
 //创建行数据
 Game.Text.prototype.newLineData = function (text) {
     var s = this;
     var lineData = new Game.TextLine();
-    if (s.style.whiteSpace === 'normal') {
-        text = text.replace(/^\s+/g, '');
-    }else if (s.style.whiteSpace === 'pre-line') {
-        text = text.replace(/^\s+/g, '');
+    switch (s.style.whiteSpace) {
+        case 'normal':
+        case 'pre-line':
+            text = text.replace(/^\s+/g, '');
+            break;
     }
     lineData.text = text;
     return lineData;

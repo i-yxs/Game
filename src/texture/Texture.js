@@ -4,19 +4,21 @@ Game.Texture = function (data, resolution, smoothing, crop) {
     //纹理数据
     s.data = data;
     //宽度
-    s.width = 0;
+    s.width = null;
     //高度
-    s.height = 0;
+    s.height = null;
     //图像缩放时是否平滑处理
     s.smoothing = smoothing || true;
     //分辨率
     s.resolution = resolution || 1;
     //裁剪
     s.crop = crop || new Game.Rectangle();
-    //纹理加载完成后回调
+    //源数据加载完成后设置纹理数据
     data.on('load', function () {
-        s.crop.width = s.width = s.data.width;
-        s.crop.height = s.height = s.data.height;
+        s.crop.width = s.data.width;
+        s.crop.height = s.data.height;
+        if (s.width === null) { s.width = s.data.width; }
+        if (s.height === null) { s.height = s.data.height; }
     });
 };
 Game.Texture.prototype.constructor = Game.Texture;
