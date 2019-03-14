@@ -19,6 +19,9 @@
 </head>
 <body>
     <div id="string" style="display:none;">
+
+
+		实现了文本自动换行，单词换行，字间距
         jQuery, also ,supports Node, browser extensions, and other non-browser environments.
         What you need to build your own jQuery
         In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
@@ -125,9 +128,9 @@
             var label = new Game.Text(string.innerHTML, {
                 fill: '#000',
                 stroke: '#f00',
-                //wordBreak: 'break-all',
-                //whiteSpace: 'pre-line',
-                //textIndent: 200,
+				wordBreak: 'normal',
+				whiteSpace: 'pre-wrap',
+                textIndent: 200,
                 //textAlign: 'right',
                 //verticalAlign: 'top',
                 fontSize: 14,
@@ -137,7 +140,7 @@
                 //fontWeight: 'bold',
                 fontFamily: 'Consolas',
                 //strokeThickness: 2,
-                letterSpacing: 2
+                //letterSpacing: 2
             });
             label.position.set(0, 0);
             label.width = 400;//label.measureText(label.text);
